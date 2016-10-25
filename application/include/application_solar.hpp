@@ -34,6 +34,18 @@ class ApplicationSolar : public Application {
         dist2origin{d},
         moon{m} {};
 };
+
+
+/*struct star{
+
+  glm::vec3 position;
+  glm::vec3 color;
+
+  star(glm::vec3 p, glm::vec3 c):
+    position{p.x, p.y, p.z},
+    color{c.x, c.y, c.z}{};
+};*/
+
   // allocate and initialize objects
   ApplicationSolar(std::string const& resource_path);
   // free allocated objects
@@ -54,11 +66,12 @@ class ApplicationSolar : public Application {
 
  protected:
   void initializeShaderPrograms();
-  void initializeGeometry();
+  void initializeGeometry(model& mdl, model_object& object);
   void updateView();
 
   // cpu representation of model
   model_object planet_object;
+  model_object star_object;
 };
 
 #endif
