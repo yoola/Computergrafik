@@ -20,6 +20,7 @@ using namespace gl;
 #include <iostream>
 
 
+
 model planet_model{};
 model star_model{};
 int stars_number= 1000;
@@ -41,22 +42,16 @@ ApplicationSolar::planet uranus  {"uranus" , 0.2f,  {0.5f, 1.0f , 1.0f}, 365/306
 std::vector<ApplicationSolar::planet> planetVector = {sun,earth,mercury,venus, mars, jupiter, saturn, uranus};
 
 
-// initializing of stars
-  
-std::random_device rd; 
-//container for all star coordinates
-std::vector<float> starVector;
-
-
-
 ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  :Application{resource_path}
- ,star_object{}, planet_object{}
+ ,planet_object{}, star_object{}
 {
-
+  //container for all star coordinates
+  std::vector<float> starVector;
+  // random functions for random star positions
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_real_distribution<float> dis1(-3, 3);
+  std::uniform_real_distribution<float> dis1(-5, 5);
   std::uniform_real_distribution<float> dis2(0.5, 1.0);
   
   for(int j = 0; j< stars_number; j++){
@@ -94,6 +89,8 @@ void ApplicationSolar::upload_planet_transforms(planet  &p) const{
   //determine the distance of the planets to the origin
   model_matrix = glm::translate(model_matrix, glm::fvec3{p.dist2origin,0.0f, -1.0f}); // here change for distance and size
 
+  
+
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                      1, GL_FALSE, glm::value_ptr(model_matrix));
 
@@ -101,6 +98,10 @@ void ApplicationSolar::upload_planet_transforms(planet  &p) const{
   glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * model_matrix);
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
                      1, GL_FALSE, glm::value_ptr(normal_matrix));
+
+  // Setting the colors for the planets
+  glUniform3f(m_shaders.at("planet").u_locs.at("ColorVector"), p.color.x, p.color.y, p.color.z);
+
 
   // bind the VAO to draw
   glBindVertexArray(planet_object.vertex_AO);
@@ -126,6 +127,8 @@ void ApplicationSolar::upload_planet_transforms(planet  &p) const{
     glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
                        1, GL_FALSE, glm::value_ptr(normal_matrix));
 
+    glUniform3f(m_shaders.at("planet").u_locs.at("ColorVector"), 1.0f, 1.0f, 0.0f);
+
     // bind the VAO to draw
     glBindVertexArray(planet_object.vertex_AO);
 
@@ -146,6 +149,7 @@ void ApplicationSolar::render() const {
    // bind shader to upload uniforms
 
   // bind the VAO to draw
+  glUseProgram(m_shaders.at("planet").handle);
   glBindVertexArray(planet_object.vertex_AO);
 
   for(auto & planet : planetVector) {
@@ -160,6 +164,15 @@ void ApplicationSolar::render() const {
 void ApplicationSolar::updateView() {
   // vertices are transformed in camera space, so camera transform must be inverted
   glm::fmat4 view_matrix = glm::inverse(m_view_transform);
+
+  glUseProgram(m_shaders.at("planet").handle);
+  // add light vector to sun
+  glm::vec4 sun = {0.0f, 0.0f, 0.0f, 1.0f};
+  sun = view_matrix * sun;
+  glUniform3f(m_shaders.at("planet").u_locs.at("LightSource"), sun.x, sun.y, sun.z);
+
+
+
   // upload matrix to gpu
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ViewMatrix"),
                      1, GL_FALSE, glm::value_ptr(view_matrix));
@@ -169,7 +182,6 @@ void ApplicationSolar::updateView() {
   glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ViewMatrix"),
                      1, GL_FALSE, glm::value_ptr(view_matrix));
 
-  glUseProgram(m_shaders.at("planet").handle); //back to the planets
 }
 
 void ApplicationSolar::updateProjection() {
@@ -271,8 +283,8 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("planet").u_locs["ModelMatrix"] = -1;
   m_shaders.at("planet").u_locs["ViewMatrix"] = -1;
   m_shaders.at("planet").u_locs["ProjectionMatrix"] = -1;
-
-  
+  m_shaders.at("planet").u_locs["ColorVector"] = -1;
+  m_shaders.at("planet").u_locs["LightSource"] = -1;
 }
 
 // load models
@@ -299,7 +311,7 @@ void ApplicationSolar::initializeGeometry(model& mdl, model_object& object)
     glEnableVertexAttribArray(1);
     // second attribute is 3 floats with no offset & stride
     glVertexAttribPointer(1, model::NORMAL.components, model::NORMAL.type, GL_FALSE, mdl.vertex_bytes, mdl.offsets[model::NORMAL]);
-
+    
      // generate generic buffer
     glGenBuffers(1, &object.element_BO);
     // bind this as an vertex array buffer containing all attributes
