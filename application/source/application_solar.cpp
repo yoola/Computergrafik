@@ -23,7 +23,9 @@ using namespace gl;
 
 model planet_model{};
 model star_model{};
-int stars_number= 1000;
+int stars_number= 4000;
+bool cel_shading = true;
+
 
 
 // initializing of planets
@@ -51,7 +53,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
   // random functions for random star positions
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_real_distribution<float> dis1(-5, 5);
+  std::uniform_real_distribution<float> dis1(-30, 30);
   std::uniform_real_distribution<float> dis2(0.5, 1.0);
   
   for(int j = 0; j< stars_number; j++){
@@ -247,6 +249,20 @@ void ApplicationSolar::keyCallback(int key, int scancode, int action, int mods) 
     m_view_transform = glm::rotate(m_view_transform, 0.05f, glm::fvec3{0.0f, 1.0f, 0.0f});
     updateView();
   }
+  // 1 = enable Blinn-Phong
+  else if(key == GLFW_KEY_1 && action == GLFW_PRESS) {
+    cel_shading = false;
+    
+    ApplicationSolar::initializeShaderPrograms();
+    updateView();
+  }
+  // 2 = enable cel-Shading
+  else if(key == GLFW_KEY_2 && action == GLFW_PRESS) {
+    cel_shading = true;
+  
+    ApplicationSolar::initializeShaderPrograms();
+    updateView();
+  }
 }
 
 //handle delta mouse movement input
@@ -269,15 +285,32 @@ void ApplicationSolar::mouseCallback(double pos_x, double pos_y) {
 // load shader programs
 void ApplicationSolar::initializeShaderPrograms() {
 
+ 
+
+  // store shader program objects in container
   m_shaders.emplace("star", shader_program{m_resource_path + "shaders/stars.vert",
                                            m_resource_path + "shaders/stars.frag"});
+
   // request uniform locations for shader program
   m_shaders.at("star").u_locs["ViewMatrix"] = -1;
   m_shaders.at("star").u_locs["ProjectionMatrix"] = -1;
 
-  // store shader program objects in container
-  m_shaders.emplace("planet", shader_program{m_resource_path + "shaders/simple.vert",
+  
+
+  if(cel_shading){
+
+    m_shaders.emplace("planet", shader_program{m_resource_path + "shaders/cel.vert",
+                                           m_resource_path + "shaders/cel.frag"});
+
+  }else{
+    m_shaders.emplace("planet", shader_program{m_resource_path + "shaders/simple.vert",
                                            m_resource_path + "shaders/simple.frag"});
+
+  }
+
+  glUseProgram(planet_program);
+  
+
   // request uniform locations for shader program
   m_shaders.at("planet").u_locs["NormalMatrix"] = -1;
   m_shaders.at("planet").u_locs["ModelMatrix"] = -1;
@@ -341,7 +374,5 @@ ApplicationSolar::~ApplicationSolar() {
 // exe entry point
 int main(int argc, char* argv[]) {
 
-
-  
   Launcher::run<ApplicationSolar>(argc, argv);
 }

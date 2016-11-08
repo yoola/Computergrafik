@@ -14,14 +14,14 @@ void main() {
     vec3 normal = normalize(pass_Normal);
 
     // k_d + k_s <=1, k_a <= 1
-    float ka = 0.8;
-    float kd = 0.4;
-    float ks = 0.4;
+    float ka = 0.7;
+    float kd = 0.45;
+    float ks = 1.0;
     //vec3 ks = vec3(1.0f, 1.0f, 1.0f);
     
-    vec3 ia = vec3(0.3f, 0.3f, 0.3f);
-    vec3 id = vec3(0.5f, 0.5f, 0.5f);
-    vec3 is = vec3(0.5f, 0.5f, 0.5f);
+    vec3 ia = vec3(0.6f, 0.6f, 0.6f);
+    vec3 id = vec3(0.3f, 0.3f, 0.3f);
+    vec3 is = vec3(1.0f, 1.0f, 1.0f);
     
     //shininess
     float b = 2.0f;
