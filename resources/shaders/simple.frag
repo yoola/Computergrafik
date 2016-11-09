@@ -14,23 +14,22 @@ void main() {
     vec3 normal = normalize(pass_Normal);
 
     // k_d + k_s <=1, k_a <= 1
-    float ka = 0.7;
-    float kd = 0.45;
-    float ks = 1.0;
-    //vec3 ks = vec3(1.0f, 1.0f, 1.0f);
+    float ka = 0.3;
+    float kd = 0.3;
+    float ks = 0.7;
     
-    vec3 ia = vec3(0.6f, 0.6f, 0.6f);
+    vec3 ia = vec3(0.3f, 0.3f, 0.3f);
     vec3 id = vec3(0.3f, 0.3f, 0.3f);
-    vec3 is = vec3(1.0f, 1.0f, 1.0f);
+    vec3 is = vec3(0.7f, 0.7f, 0.7f);
     
     //shininess
     float b = 2.0f;
     
     // Ambient Light
-    vec3 ambient = ka * ia* pass_Color;
+    vec3 ambient = ka * ia+ pass_Color;
 
     // Defuse Light
-    vec3 diffuse = kd * id* pass_Color;
+    vec3 diffuse = kd * id+ pass_Color;
 
     // Specular Light
     vec3 specular = ks * is;

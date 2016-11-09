@@ -9,6 +9,8 @@ out vec4 out_Color;
 void main(void)
 {
 
+  // resource: http://www.informatik.uni-oldenburg.de/~trigger/content/opengl/opengl_course/slides/2010-JOGL-11-Toon-Shading.pdf
+  
   vec3 normal = normalize(pass_Normal);
   float intensity = dot(normalize(pass_LightVector.xyz), normal);
 

@@ -24,7 +24,7 @@ using namespace gl;
 model planet_model{};
 model star_model{};
 int stars_number= 4000;
-bool cel_shading = true;
+bool cel_shading = false;
 
 
 
@@ -308,7 +308,7 @@ void ApplicationSolar::initializeShaderPrograms() {
 
   }
 
-  glUseProgram(planet_program);
+  glUseProgram(m_shaders.at("planet").handle);
   
 
   // request uniform locations for shader program

@@ -36,16 +36,6 @@ class ApplicationSolar : public Application {
 };
 
 
-/*struct star{
-
-  glm::vec3 position;
-  glm::vec3 color;
-
-  star(glm::vec3 p, glm::vec3 c):
-    position{p.x, p.y, p.z},
-    color{c.x, c.y, c.z}{};
-};*/
-
   // allocate and initialize objects
   ApplicationSolar(std::string const& resource_path);
   // free allocated objects
