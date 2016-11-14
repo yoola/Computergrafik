@@ -24,9 +24,7 @@ using namespace gl;
 model planet_model{};
 model star_model{};
 int stars_number= 4000;
-bool cel_shading = false;
 std::string shader = "planet";
-
 
 
 // initializing of planets
@@ -79,7 +77,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
 }
 
   
-void ApplicationSolar::upload_planet_transforms(planet  &p) const{
+void ApplicationSolar::upload_planet_transforms(planet &p) const{
  
    // bind shader to upload uniforms
   glUseProgram(m_shaders.at(shader).handle);
@@ -144,12 +142,10 @@ void ApplicationSolar::upload_planet_transforms(planet  &p) const{
 
 void ApplicationSolar::render() const {
 
-  // draw stars
+   // draw stars
   glUseProgram(m_shaders.at("star").handle);
   glBindVertexArray(star_object.vertex_AO);
   glDrawArrays(GL_POINTS, 0, stars_number); 
-
-   // bind shader to upload uniforms
 
   // bind the VAO to draw
   glUseProgram(m_shaders.at(shader).handle);
@@ -168,13 +164,13 @@ void ApplicationSolar::updateView() {
   // vertices are transformed in camera space, so camera transform must be inverted
   glm::fmat4 view_matrix = glm::inverse(m_view_transform);
 
-  glUseProgram(m_shaders.at(shader).handle);
+  
   // add light vector to sun
   glm::vec4 sun = {0.0f, 0.0f, 0.0f, 1.0f};
   sun = view_matrix * sun;
   glUniform3f(m_shaders.at(shader).u_locs.at("LightSource"), sun.x, sun.y, sun.z);
 
-
+  glUseProgram(m_shaders.at(shader).handle);
 
   // upload matrix to gpu
   glUniformMatrix4fv(m_shaders.at(shader).u_locs.at("ViewMatrix"),
@@ -185,29 +181,32 @@ void ApplicationSolar::updateView() {
   glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ViewMatrix"),
                      1, GL_FALSE, glm::value_ptr(view_matrix));
 
+  glUseProgram(m_shaders.at(shader).handle);
+
 }
 
 void ApplicationSolar::updateProjection() {
   // upload matrix to gpu
+  glUseProgram(m_shaders.at(shader).handle); 
+  
   glUniformMatrix4fv(m_shaders.at(shader).u_locs.at("ProjectionMatrix"),
                      1, GL_FALSE, glm::value_ptr(m_view_projection));
 
   glUseProgram(m_shaders.at("star").handle);
 
   glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ProjectionMatrix"),
-                     1, GL_FALSE, glm::value_ptr(m_view_projection));
+                     1, GL_FALSE, glm::value_ptr(m_view_projection)); 
+  glUseProgram(m_shaders.at(shader).handle);
 
-  glUseProgram(m_shaders.at(shader).handle); //back to the planets
-  
 }
 
 
 // update uniform locations
 void ApplicationSolar::uploadUniforms() {
+
   updateUniformLocations();
   // bind new shader
   glUseProgram(m_shaders.at(shader).handle);
-
   updateView();
   updateProjection();
 }
@@ -250,14 +249,17 @@ void ApplicationSolar::keyCallback(int key, int scancode, int action, int mods) 
     m_view_transform = glm::rotate(m_view_transform, 0.05f, glm::fvec3{0.0f, 1.0f, 0.0f});
     updateView();
   }
+
   // 1 = enable Blinn-Phong
   else if(key == GLFW_KEY_1 && action == GLFW_PRESS) {
     shader = "planet";
+    initializeShaderPrograms();
     uploadUniforms();
   }
   // 2 = enable cel-Shading
   else if(key == GLFW_KEY_2 && action == GLFW_PRESS) {
     shader = "cel";
+    initializeShaderPrograms();
     uploadUniforms();
   }
 }
@@ -269,14 +271,13 @@ void ApplicationSolar::mouseCallback(double pos_x, double pos_y) {
   //zooming in by moving the mouse up
   if ( pos_x>0 && pos_y <0) {
     m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.0f, -0.1f});
-    updateView();
   }
   // zooming out by moving the mouse down
   else if ( pos_x<0 && pos_y >0){
 
     m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.0f, 0.1f});
-    updateView();
   }
+  updateView();
 }
 
 // load shader programs
@@ -293,7 +294,6 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("star").u_locs["ProjectionMatrix"] = -1;
 
   
-
   m_shaders.emplace("planet", shader_program{m_resource_path + "shaders/simple.vert",
                                            m_resource_path + "shaders/simple.frag"});
 
@@ -305,7 +305,6 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("planet").u_locs["ColorVector"] = -1;
   m_shaders.at("planet").u_locs["LightSource"] = -1;
 
-
   m_shaders.emplace("cel", shader_program{m_resource_path + "shaders/cel.vert",
                                            m_resource_path + "shaders/cel.frag"});
 
@@ -315,7 +314,9 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("cel").u_locs["ViewMatrix"] = -1;
   m_shaders.at("cel").u_locs["ProjectionMatrix"] = -1;
   m_shaders.at("cel").u_locs["ColorVector"] = -1;
-  m_shaders.at("cel").u_locs["LightSource"] = -1;  
+  m_shaders.at("cel").u_locs["LightSource"] = -1;
+  
+  
 }
 
 // load models
