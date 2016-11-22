@@ -124,7 +124,7 @@ void ApplicationSolar::upload_planet_transforms(planet &p) const{
   //glUseProgram(m_shaders.at(shader).handle);
 
   auto tex_obj = textureMap.at(p.name);
-  
+
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, tex_obj.handle);
   glUseProgram(m_shaders.at(shader).handle);
@@ -351,7 +351,7 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("planet").u_locs["ProjectionMatrix"] = -1;
   m_shaders.at("planet").u_locs["ColorVector"] = -1;
   m_shaders.at("planet").u_locs["LightSource"] = -1;
-  //--m_shaders.at("planet").u_locs["ColorTex"] = -1;
+  m_shaders.at("planet").u_locs["ColorTex"] = -1;
 
   m_shaders.emplace("cel", shader_program{m_resource_path + "shaders/cel.vert",
                                            m_resource_path + "shaders/cel.frag"});
