@@ -5,11 +5,14 @@ in  vec3 pass_Color;
 in  vec3 pass_LightVector;
 in  vec3 pass_ViewerVector;
 
+uniform  sampler2D ColorTex;
+
+in vec2 pass_TexCoord;
 out vec4 out_Color;
 
 void main() {
 
-    
+    vec4 TexColor = texture(ColorTex, pass_TexCoord);
     vec3 h = normalize(pass_LightVector.xyz + pass_ViewerVector);
     vec3 normal = normalize(pass_Normal);
 
@@ -26,18 +29,18 @@ void main() {
     float b = 2.0f;
     
     // Ambient Light
-    vec3 ambient = ka * ia+ pass_Color;
+    vec3 ambient = ka * ia+ TexColor.rgb;
 
     // Defuse Light
-    vec3 diffuse = kd * id+ pass_Color;
+    vec3 diffuse = kd * id+ TexColor.rgb;
 
     // Specular Light
     vec3 specular = ks * is;
 
     vec3 result = vec3(ambient+ diffuse * dot(pass_LightVector.rgb, normal)+ 
-    				specular* pow(dot(normal,h),b));
+                    specular* pow(dot(normal,h),b));
 
     out_Color = vec4(result,1.0f);
 
-  	//out_Color = vec4(abs(normalize(pass_Normal)), 1.0);
+    //out_Color = vec4(abs(normalize(pass_Normal)), 1.0);
 }

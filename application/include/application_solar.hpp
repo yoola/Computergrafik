@@ -58,7 +58,7 @@ class ApplicationSolar : public Application {
   void initializeShaderPrograms();
   void initializeGeometry(model& mdl, model_object& object);
   void updateView();
-
+  //GLuint loadTexture(pixel_data const& tex) const;
   // cpu representation of model
   model_object planet_object;
   model_object star_object;
