@@ -30,7 +30,7 @@ std::string shader = "planet";
 
 
 // initializing of planets
- //name{n},size{s},color{1.0f, 1.0f, 1.0f},rot_speed{r},dist2origin{d},moon{m} {};*/
+ //                                 name{n}, size{s},   color,               rot_speed{r}, dist2origin{d},moon{m} {};*/
 ApplicationSolar::planet sun       {"sun"    ,   0.7f,  {1.0f, 0.8f , 0.0f}, 0.0f,         0.0f,       };
 ApplicationSolar::planet mercury   {"mercury",   0.05f, {0.5f, 0.5f , 0.5f}, 365/88.0f,    15.0f,      };
 ApplicationSolar::planet venus     {"venus"  ,   0.2f,  {0.5f, 0.5f , 0.5f}, 365/225.0f,   18.0f, true };
@@ -39,7 +39,7 @@ ApplicationSolar::planet mars      {"mars"   ,   0.1f,  {0.8f, 0.6f , 0.3f}, 365
 ApplicationSolar::planet jupiter   {"jupiter",   0.35f, {0.8f, 0.8f , 0.5f}, 365/4329.f,   31.0f,      };
 ApplicationSolar::planet saturn    {"saturn" ,   0.2f,  {0.9f, 0.7f , 0.5f}, 365/1751.0f,  36.0f, true };
 ApplicationSolar::planet uranus    {"uranus" ,   0.2f,  {0.5f, 1.0f , 1.0f}, 365/30664.0f, 40.0f,      };
-ApplicationSolar::planet skydome   {"skydome",   50.0f, {0.0f, 0.0f, 0.0f},  0.0f,         0.0f,       };
+ApplicationSolar::planet skydome   {"skydome",   50.0f, {0.0f, 0.0f, 0.0f},  0.0f,           0.0f,       };
  
 
 //container for planets
