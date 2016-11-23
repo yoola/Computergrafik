@@ -15,15 +15,16 @@ namespace utils {
 texture_object create_texture_object(pixel_data const& tex) {
 
   texture_object t_obj{};
+  t_obj.target = GL_TEXTURE_2D;
   
   glGenTextures(1, &t_obj.handle);
-  glBindTexture(GL_TEXTURE_2D, t_obj.handle);
+  glBindTexture(t_obj.target, t_obj.handle);
 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(t_obj.target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(t_obj.target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
-   GLenum internal_format = GL_NONE;
+  GLenum internal_format = GL_NONE;
   if (tex.channels == GL_RED) {
     internal_format = GL_R8;
   }
@@ -36,8 +37,8 @@ texture_object create_texture_object(pixel_data const& tex) {
   else if (tex.channels == GL_RGBA) {
     internal_format = GL_RGBA8;
   }
-    glTexImage2D(GL_TEXTURE_2D, 0, GLint(internal_format), tex.width, 
-      tex.height, 0, tex.channels, tex.channel_type, &tex.pixels[0]);
+    glTexImage2D(t_obj.target, 0, GLint(internal_format), tex.width, 
+      tex.height, 0, tex.channels, tex.channel_type, tex.ptr());
   return t_obj;
 }
 

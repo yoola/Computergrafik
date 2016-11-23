@@ -52,7 +52,7 @@ class ApplicationSolar : public Application {
   //void glfwGetCursorPos( double xpos, double ypos);
   // draw all objects
   void render() const;
-  void upload_planet_transforms(planet  &p) const;
+  void upload_planet_transforms(planet  &p,  texture_object const& tex_obj) const;
 
  protected:
   void initializeShaderPrograms();

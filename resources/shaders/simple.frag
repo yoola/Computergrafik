@@ -29,7 +29,7 @@ void main() {
     float b = 2.0f;
     
     // Ambient Light
-    vec3 ambient = ka * ia+ TexColor.rgb;
+    vec3 ambient = ka * ia+TexColor.rgb;
 
     // Defuse Light
     vec3 diffuse = kd * id+ TexColor.rgb;
