@@ -3,6 +3,9 @@
 
 #include <map>
 #include <glbinding/gl/gl.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
+#include <glm/gtc/type_ptr.hpp>
 // use gl definitions from glbinding 
 using namespace gl;
 
@@ -19,6 +22,34 @@ struct model_object {
   // indices number, if EBO exists
   GLsizei num_elements = 0;
 };
+
+struct planet{
+
+  std::string name;
+  float size;
+  glm::vec3 color;
+  float rot_speed;
+  float dist2origin;
+  bool moon;
+
+  planet(std::string n, float s, float r, float d, bool m = false):
+        name{n},
+        size{s},
+        color{1.0f, 1.0f, 1.0f},
+        rot_speed{r},
+        dist2origin{d},
+        moon{m} {};
+
+  planet(std::string n, float s,  glm::vec3 c, float r, float d, bool m = false):
+        name{n},
+        size{s},
+        color{c.x, c.y, c.z},
+        rot_speed{r},
+        dist2origin{d},
+        moon{m} {};
+};
+
+
 
 // gpu representation of texture
 struct texture_object {

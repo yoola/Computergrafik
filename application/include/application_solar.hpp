@@ -9,33 +9,7 @@
 class ApplicationSolar : public Application {
  public:
   // defining struct with properties for the planets
-  struct planet{
-
-  std::string name;
-  float size;
-  glm::vec3 color;
-  float rot_speed;
-  float dist2origin;
-  bool moon;
-
-  planet(std::string n, float s, float r, float d, bool m = false):
-        name{n},
-        size{s},
-        color{1.0f, 1.0f, 1.0f},
-        rot_speed{r},
-        dist2origin{d},
-        moon{m} {};
-
-  planet(std::string n, float s,  glm::vec3 c, float r, float d, bool m = false):
-        name{n},
-        size{s},
-        color{c.x, c.y, c.z},
-        rot_speed{r},
-        dist2origin{d},
-        moon{m} {};
-};
-
-
+ 
   // allocate and initialize objects
   ApplicationSolar(std::string const& resource_path);
   // free allocated objects
@@ -53,15 +27,19 @@ class ApplicationSolar : public Application {
   // draw all objects
   void render() const;
   void upload_planet_transforms(planet  &p,  texture_object const& tex_obj) const;
+  void initializeShaderPrograms();
+  void initialize_screenquad();
+  void initialize_framebuffer();
 
  protected:
-  void initializeShaderPrograms();
+  
   void initializeGeometry(model& mdl, model_object& object);
   void updateView();
-  //GLuint loadTexture(pixel_data const& tex) const;
   // cpu representation of model
   model_object planet_object;
   model_object star_object;
+  model_object screen_quad_object;
+  texture_object squad{};
 
 };
 
