@@ -5,6 +5,12 @@ in  vec3 pass_Color;
 in  vec3 pass_LightVector;
 in  vec3 pass_ViewerVector;
 
+//Matrix Uniforms as specified with glUniformMatrix4fv
+uniform mat4 ModelMatrix;
+uniform mat4 ViewMatrix;
+uniform mat4 ProjectionMatrix;
+uniform mat4 NormalMatrix;
+
 uniform  sampler2D ColorTex;
 
 in vec2 pass_TexCoord;
